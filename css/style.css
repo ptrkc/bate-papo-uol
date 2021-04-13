@@ -64,6 +64,31 @@ body {
 }
 #top-bar ion-icon {
     font-size: 44px;
+    flex-shrink: 0;
+}
+#messages{
+    margin: 106px 0px;   
+}
+#messages li {
+    background-color: #FFFFFF;
+    width: 100%;
+    border-radius: 2px;
+    padding: 12px 8px;
+    font-size: 14px;
+    line-height: 20px;
+    margin:4px 0px;
+}
+#messages li.announcement {
+    background-color: #DCDCDC;
+}
+#messages li.private {
+    background-color: #FFDEDE;
+}
+#messages li span.time {
+    color: #AAAAAA;
+}
+#messages li span.username {
+    font-weight: bold;
 }
 #bottom-bar {
     position: fixed;
@@ -91,7 +116,8 @@ body {
     font-style: italic;
 }
 #bottom-bar ion-icon {
-    font-size: 50px;
+    font-size: 33px;
+    flex-shrink: 0;
 }
 #bottom-bar span {
     font-size: 14px;
@@ -125,6 +151,7 @@ body {
 #sidebar ion-icon {
     font-size: 25px;
     margin: 8px;
+    flex-shrink: 0;
 }
 #sidebar span.check {
     background-image: url(../img/check.svg);
