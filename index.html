@@ -18,15 +18,55 @@
         <input type="text" id="username" placeholder="Digite seu nome">
         <button class="active">Entrar</button>
     </div>
-    <div id="top-bar">
-        <img src="img/logo_small.png" class="logo" alt="Logo Bate-Papo Uol">
-        <ion-icon name="people"></ion-icon>
-    </div>
-    <div id="sidebar"></div>
-    <div id="messages"></div>
-    <div id="bottom-bar">
-        <input type="text" id="message" placeholder="Escreva aqui...">
-        <ion-icon name="paper-plane-outline"></ion-icon>
+    <div id="content">
+        <div id="left">
+            <div id="top-bar">
+                <img src="img/logo_small.png" class="logo" alt="Logo Bate-Papo Uol">
+                <ion-icon name="people"></ion-icon>
+            </div>
+            <div id="messages"></div>
+            <div id="bottom-bar">
+                <input type="text" id="message" placeholder="Escreva aqui...">
+                <ion-icon name="paper-plane-outline"></ion-icon>
+            </div>
+        </div>
+        <div id="right" class="hidden">
+            <div id="overlay"></div>
+            <div id="sidebar">
+                <span>Escolha um contato <br>para enviar mensagem:</span>
+                <ul>
+                    <li>
+                        <ion-icon name="people"></ion-icon>
+                        </ion-icon>Todos
+                        <span class="check"></span>
+                    </li>
+                    <li>
+                        <ion-icon name="person-circle"></ion-icon>
+                        João
+                        <span class="check hidden"></span>
+                    </li>
+                    <li>
+                        <ion-icon name="person-circle"></ion-icon>
+                        Maria
+                        <span class="check hidden"></span>
+                    </li>
+                </ul>
+                <span>Escolha a visibilidade:</span>
+                <ul>
+                    <li>
+                        <ion-icon name="lock-open"></ion-icon>Público<span class="check "></span>
+
+                    </li>
+                    <li>
+                        <ion-icon name="lock-closed"></ion-icon>Reservadamente<span class="check hidden"></span>
+
+                        </ion-icon>
+
+                    </li>
+                </ul>
+            </div>
+        </div>
+
     </div>
 
     <script src="https://unpkg.com/ionicons@5.4.0/dist/ionicons.js"></script>

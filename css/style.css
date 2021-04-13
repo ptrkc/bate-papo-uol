@@ -96,3 +96,49 @@ justify-content: space-between;
 #bottom-bar ion-icon {
     font-size: 33px;
 }
+#overlay{
+    background: rgba(0, 0, 0, 0.6);
+    position: fixed;
+    height: 100%;
+    width: 100%;
+}
+#sidebar {
+    width: 259px;
+    height: 100%;
+    top: 0;
+    right: 0;
+    position: fixed;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    font-size: 16px;
+    padding: 0px 12px;
+}
+#sidebar span {
+    text-align: center;
+    font-weight: bold;
+    margin: 25px;
+    line-height: 19px;
+}
+#sidebar ion-icon {
+    font-size: 25px;
+    margin: 8px;
+}
+#sidebar span.check {
+    background-image: url(../img/check.svg);
+    width: 13px;
+    height: 11px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    position: absolute;
+    right: 0;
+}
+#sidebar li {
+    display: flex;
+    align-items: center;
+    height: 34px;
+}
+.hidden {
+    display: none;
+}
