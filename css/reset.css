@@ -49,3 +49,12 @@ table {
 * {
     box-sizing: border-box;
 }
+input, button {
+	font-family: inherit;
+}
+input:focus{
+    outline: none;
+}
+input::-moz-placeholder {
+	opacity:  1;
+ }
