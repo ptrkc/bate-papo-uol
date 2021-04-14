@@ -3,24 +3,28 @@ body {
     font-family: 'Roboto', sans-serif;
     font-weight: normal;
 }
-#welcome-screen {
+#login-screen {
     background-color: #FFFFFF;
     position: fixed;
     width: 100%;
     height: 100%;
+    top: 0;
+    left: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
+    transition: .5s;
+    z-index: 3;
 }
-#welcome-screen.hidden {
+#login-screen.hidden {
     display: none;
 }
-#welcome-screen .logo {
+#login-screen .logo {
     width: 130px;
     height: 92px;
     margin: 72px 0px 94px 0px;    
 }
-#welcome-screen input {
+#login-screen input {
     width: 261px;
     height: 54px;
     font-size: 18px;
@@ -29,10 +33,10 @@ body {
     text-align: center;
     margin-bottom: 15px;
 }
-#welcome-screen input::placeholder {
+#login-screen input::placeholder {
     color: #AEAEAE;
 }
-#welcome-screen button {
+#login-button {
     width: 109px;
     height: 45px;
     font-size: 18px;
@@ -40,10 +44,11 @@ body {
     color: #696969;
     border-radius: 9px;
     border: none;
+    transition: .5s;
 }
-#welcome-screen button.active {
-    background: #d4d4d4;
-    color: #3d3d3d;
+#login-button.active {
+    background: #ff5927;
+    color: #ffffff;
 }
 #top-bar{
     position: fixed;
@@ -57,6 +62,7 @@ body {
     align-items: center;
     justify-content: space-between;
     padding: 0px 22px;
+    z-index: 1;
 }
 #top-bar .logo{
     width: 75px;
@@ -102,6 +108,7 @@ body {
     align-items: center;
     justify-content: space-between;
     padding: 0px 17px;
+    z-index: 1;
 }
 #bottom-bar input {
     width: 100%;
@@ -129,6 +136,7 @@ body {
     position: fixed;
     height: 100%;
     width: 100%;
+    z-index: 2;
 }
 #sidebar {
     width: 259px;
@@ -141,6 +149,7 @@ body {
     flex-direction: column;
     font-size: 16px;
     padding: 0px 12px;
+    z-index: 3;
 }
 #sidebar span {
     text-align: center;

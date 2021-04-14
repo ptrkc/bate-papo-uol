@@ -14,10 +14,10 @@
 </head>
 
 <body>
-    <div id="welcome-screen" class="hidden">
+    <div id="login-screen" class="">
         <img src="img/logo.png" class="logo" alt="Logo Bate-Papo Uol">
         <input type="text" id="username" placeholder="Digite seu nome">
-        <button class="active">Entrar</button>
+        <button class="" id="login-button">Entrar</button>
     </div>
     <div id="content">
         <div id="left">
@@ -45,7 +45,7 @@
             <div id="overlay"></div>
             <div id="sidebar">
                 <span>Escolha um contato <br>para enviar mensagem:</span>
-                <ul>
+                <ul id="users">
                     <li>
                         <ion-icon name="people"></ion-icon>
                         </ion-icon>Todos
@@ -63,7 +63,7 @@
                     </li>
                 </ul>
                 <span>Escolha a visibilidade:</span>
-                <ul>
+                <ul id="privacy">
                     <li>
                         <ion-icon name="lock-open"></ion-icon>Público<span class="check "></span>
 
@@ -79,7 +79,7 @@
         </div>
 
     </div>
-
+    <script src="js/scripts.js"></script>
     <script src="https://unpkg.com/ionicons@5.4.0/dist/ionicons.js"></script>
 </body>
 
