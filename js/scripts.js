@@ -29,13 +29,18 @@ function clickedLogin(active) {
 function requestUsername(username) {
     const nameObject = { name: username }
     const usernameRequest = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/uol/participants", nameObject);
-    usernameRequest.then(successfulLogin)
+    usernameRequest.then(function () { successfulLogin(nameObject) });
     usernameRequest.catch(receivedError)
 }
-function successfulLogin() {
+function successfulLogin(nameObject) {
     hideLoginScreen();
     //renderMessages();
-    //keepAlive();
+    keepAlive(nameObject);
+}
+function keepAlive(nameObject) {
+    setInterval(function () {
+        axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/uol/status", nameObject);
+    }, 5000);
 }
 function hideLoginScreen() {
     const loginScreen = document.getElementById("login-screen")
