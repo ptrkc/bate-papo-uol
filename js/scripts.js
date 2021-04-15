@@ -13,7 +13,6 @@ function evaluateClick(event) {
     }
     switch (clickedItem) {
         case "login-button":
-            console.log("working")
             clickedLogin(event.target.classList.contains("active"));
             break;
         default:
@@ -23,12 +22,30 @@ function evaluateClick(event) {
 
 function clickedLogin(active) {
     if (active) {
-        const loginScreen = document.getElementById("login-screen")
-        loginScreen.style.opacity = 0
-        setTimeout(function () {
-            loginScreen.classList.add("hidden")
-        }, 500)
+        const username = document.getElementById("username").value;
+        requestUsername(username);
     }
+}
+function requestUsername(username) {
+    const nameObject = { name: username }
+    const usernameRequest = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/uol/participants", nameObject);
+    usernameRequest.then(successfulLogin)
+    usernameRequest.catch(receivedError)
+}
+function successfulLogin() {
+    hideLoginScreen();
+    //renderMessages();
+    //keepAlive();
+}
+function hideLoginScreen() {
+    const loginScreen = document.getElementById("login-screen")
+    loginScreen.style.opacity = 0
+    setTimeout(function () {
+        loginScreen.classList.add("hidden")
+    }, 500)
+}
+function receivedError(error) {
+    console.log("Por favor, escolha outro nome.")
 }
 function loginScreen() {
     const usernameInput = document.getElementById("username")
