@@ -173,14 +173,11 @@ body {
     z-index: 3;
     transition: 0.3s;
 }
-#sidebar span {
+#sidebar > span {
     text-align: center;
     font-weight: bold;
     margin: 25px;
     line-height: 19px;
-}
-#sidebar span.participant {
-    word-wrap: break-word;
 }
 #sidebar ion-icon {
     font-size: 25px;
@@ -195,12 +192,16 @@ body {
     background-position: center;
     background-size: cover;
     position: absolute;
-    right: 0;
+    right: 15px;
 }
 #sidebar li {
     display: flex;
     align-items: center;
-    height: 34px;
+    min-height: 34px;
+}
+#sidebar li span.participant {
+    word-break: break-all;
+    width: 160px;
 }
 .hidden {
     display: none;

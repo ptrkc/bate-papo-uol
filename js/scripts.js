@@ -87,7 +87,7 @@ function renderParticipants(response) {
     let participantsHTML = `
     <li>
         <ion-icon name="people"></ion-icon>
-        </ion-icon>Todos
+        <span class="participant">Todos</span>
         <span class="check"></span>
     </li>
     `
@@ -97,7 +97,7 @@ function renderParticipants(response) {
         participant = `
                 <li>
                     <ion-icon name="person-circle"></ion-icon>
-                    ${participantsArray[i].name}
+                    <span class="participant">${participantsArray[i].name}</span>
                     <span class="check hidden"></span>
                 </li>                `
         participantsHTML += participant
