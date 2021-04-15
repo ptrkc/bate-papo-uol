@@ -45,7 +45,10 @@ function hideLoginScreen() {
     }, 500)
 }
 function receivedError(error) {
-    console.log("Por favor, escolha outro nome.")
+    const usernameInput = document.getElementById("username");
+    usernameInput.value = "";
+    usernameInput.focus();
+    document.querySelector("#login-screen span").classList.remove("soft-hidden");
 }
 function loginScreen() {
     const usernameInput = document.getElementById("username")
@@ -60,4 +63,5 @@ function checkInput(input, button) {
     } else {
         button.classList.add("active")
     }
+    document.querySelector("#login-screen span").classList.add("soft-hidden");
 }

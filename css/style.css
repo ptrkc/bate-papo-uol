@@ -24,6 +24,14 @@ body {
     height: 92px;
     margin: 72px 0px 94px 0px;    
 }
+#login-screen span {
+    font-size: 20px;
+    color: rgb(255, 92, 92);
+    margin: 5px;
+}
+#login-screen span.soft-hidden {
+    visibility: hidden;
+}
 #login-screen input {
     width: 261px;
     height: 54px;
