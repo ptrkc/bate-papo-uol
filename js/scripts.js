@@ -52,8 +52,40 @@ function requestUsername(username) {
 function successfulLogin() {
     hideLoginScreen();
     requestMessagesLoop();
+    requestParticipantsLoop()
     keepAlive();
 }
+function requestParticipantsLoop() {
+    requestParticipants()
+    setInterval(requestParticipants, 10000);
+}
+function requestParticipants() {
+    const participantsRequest = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/uol/participants");
+    participantsRequest.then(renderParticipants);
+}
+function renderParticipants(response) {
+    let participantsHTML = `
+    <li>
+        <ion-icon name="people"></ion-icon>
+        </ion-icon>Todos
+        <span class="check"></span>
+    </li>
+    `
+    let participant;
+    const participantsArray = response.data
+    for (let i = 0; i < participantsArray.length; i++) {
+        participant = `
+                <li>
+                    <ion-icon name="person-circle"></ion-icon>
+                    ${participantsArray[i].name}
+                    <span class="check hidden"></span>
+                </li>                `
+        participantsHTML += participant
+    }
+    const participants = document.getElementById("participants");
+    participants.innerHTML = participantsHTML;
+}
+
 function hideLoginScreen() {
     const loginScreen = document.getElementById("login-screen")
     loginScreen.style.opacity = 0
@@ -77,22 +109,22 @@ function renderMessages(response) {
         switch (messagesArray[i].type) {
             case "status":
                 message = `
-                <li class="status"><span class="time">(${messagesArray[i].time})</span> <span class="username">${messagesArray[i].from}</span> ${messagesArray[i].text}</li>
+                <li class="status"><span class="time">(${messagesArray[i].time})</span> <span class="participant">${messagesArray[i].from}</span> ${messagesArray[i].text}</li>
                 `
                 messagesHTML += message
                 break;
             case "message":
                 message = `
-                <li><span class="time">(${messagesArray[i].time})</span> <span class="username">${messagesArray[i].from}</span>
-                    para <span class="username">${messagesArray[i].to}</span>: ${messagesArray[i].text}</li>
+                <li><span class="time">(${messagesArray[i].time})</span> <span class="participant">${messagesArray[i].from}</span>
+                    para <span class="participant">${messagesArray[i].to}</span>: ${messagesArray[i].text}</li>
                 `
                 messagesHTML += message
                 break;
             case "private_message":
                 if (messagesArray[i].to === nameObject.name) {
                     message = `
-                    <li class="private"><span class="time">(${messagesArray[i].time})</span> <span class="username">${messagesArray[i].from}</span>
-                reservadamente para <span class="username">${messagesArray[i].to}</span>: ${messagesArray[i].text}</li>
+                    <li class="private"><span class="time">(${messagesArray[i].time})</span> <span class="participant">${messagesArray[i].from}</span>
+                reservadamente para <span class="participant">${messagesArray[i].to}</span>: ${messagesArray[i].text}</li>
                 `
                     messagesHTML += message
                 }

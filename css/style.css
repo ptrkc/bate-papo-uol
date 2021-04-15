@@ -102,7 +102,7 @@ body {
 #messages li span.time {
     color: #AAAAAA;
 }
-#messages li span.username {
+#messages li span.participant {
     font-weight: bold;
 }
 #bottom-bar {
