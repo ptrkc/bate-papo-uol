@@ -1,5 +1,5 @@
 const nameObject = {};
-
+let lastMessages;
 document.addEventListener("click", evaluateClick)
 
 loginScreen();
@@ -20,6 +20,18 @@ function evaluateClick(event) {
         case "send":
             sendMessage();
             break;
+        case "participants-button":
+            showSidebar();
+            break;
+        case "participants":
+            showSidebar();
+            break;
+        case "privacy":
+            showSidebar();
+            break;
+        case "overlay":
+            showSidebar();
+            break;
         default:
             break;
     }
@@ -34,7 +46,10 @@ function sendMessage() {
     }
     sendRequest = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/uol/messages", messageToSend);
     sendRequest.then(requestMessages);
-    messageInput.value = ""
+    sendRequest.catch(function () {
+        window.location.reload()
+    });
+    messageInput.value = "";
     messageInput.focus();
 }
 function clickedLogin(active) {
@@ -105,37 +120,41 @@ function renderMessages(response) {
     let messagesHTML = ""
     let message;
     const messagesArray = response.data
-    for (let i = 0; i < messagesArray.length; i++) {
-        switch (messagesArray[i].type) {
-            case "status":
-                message = `
+    const newMessagesArrived = (JSON.stringify(messagesArray) !== JSON.stringify(lastMessages))
+    if (lastMessages === undefined || newMessagesArrived) {
+        for (let i = 0; i < messagesArray.length; i++) {
+            switch (messagesArray[i].type) {
+                case "status":
+                    message = `
                 <li class="status"><span class="time">(${messagesArray[i].time})</span> <span class="participant">${messagesArray[i].from}</span> ${messagesArray[i].text}</li>
                 `
-                messagesHTML += message
-                break;
-            case "message":
-                message = `
+                    messagesHTML += message
+                    break;
+                case "message":
+                    message = `
                 <li><span class="time">(${messagesArray[i].time})</span> <span class="participant">${messagesArray[i].from}</span>
                     para <span class="participant">${messagesArray[i].to}</span>: ${messagesArray[i].text}</li>
                 `
-                messagesHTML += message
-                break;
-            case "private_message":
-                if (messagesArray[i].to === nameObject.name) {
-                    message = `
+                    messagesHTML += message
+                    break;
+                case "private_message":
+                    if (messagesArray[i].to === nameObject.name) {
+                        message = `
                     <li class="private"><span class="time">(${messagesArray[i].time})</span> <span class="participant">${messagesArray[i].from}</span>
                 reservadamente para <span class="participant">${messagesArray[i].to}</span>: ${messagesArray[i].text}</li>
                 `
-                    messagesHTML += message
-                }
-                break;
-            default:
-                break;
+                        messagesHTML += message
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
+        const messages = document.getElementById("messages");
+        messages.innerHTML = messagesHTML;
+        lastMessages = messagesArray
+        window.scrollTo(0, document.body.scrollHeight);
     }
-    const messages = document.getElementById("messages");
-    messages.innerHTML = messagesHTML;
-    window.scrollTo(0, document.body.scrollHeight);
 }
 
 function keepAlive() {
@@ -164,4 +183,8 @@ function checkInput(input, button) {
         button.classList.add("active")
     }
     document.querySelector("#login-screen span").classList.add("soft-hidden");
+}
+
+function showSidebar() {
+    document.getElementById("right").classList.remove("hidden")
 }
