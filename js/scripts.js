@@ -1,4 +1,10 @@
 const nameObject = {};
+const messageToSend = {
+    from: "",
+    to: "Todos",
+    text: "",
+    type: "message" // ou "private_message" para o bônus
+}
 let lastMessages;
 document.addEventListener("click", evaluateClick)
 
@@ -21,16 +27,16 @@ function evaluateClick(event) {
             sendMessage();
             break;
         case "participants-button":
-            showSidebar();
+            showSidebar(true);
             break;
         case "participants":
-            showSidebar();
+            selectPartiticipant(event.target);
             break;
         case "privacy":
-            showSidebar();
+            selectPrivacy(event.target);
             break;
         case "overlay":
-            showSidebar();
+            showSidebar(false);
             break;
         default:
             break;
@@ -38,19 +44,17 @@ function evaluateClick(event) {
 }
 function sendMessage() {
     const messageInput = document.getElementById("message")
-    const messageToSend = {
-        from: nameObject.name,
-        to: "Todos",
-        text: messageInput.value,
-        type: "message" // ou "private_message" para o bônus
+    if (messageInput.value !== "") {
+        messageToSend.text = messageInput.value
+        console.log(messageToSend);
+        sendRequest = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/uol/messages", messageToSend);
+        sendRequest.then(requestMessages);
+        sendRequest.catch(function () {
+            window.location.reload()
+        });
+        messageInput.value = "";
+        messageInput.focus();
     }
-    sendRequest = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/uol/messages", messageToSend);
-    sendRequest.then(requestMessages);
-    sendRequest.catch(function () {
-        window.location.reload()
-    });
-    messageInput.value = "";
-    messageInput.focus();
 }
 function clickedLogin(active) {
     if (active) {
@@ -65,6 +69,7 @@ function requestUsername(username) {
     usernameRequest.catch(receivedError)
 }
 function successfulLogin() {
+    messageToSend.from = nameObject.name
     hideLoginScreen();
     requestMessagesLoop();
     requestParticipantsLoop()
@@ -138,7 +143,7 @@ function renderMessages(response) {
                     messagesHTML += message
                     break;
                 case "private_message":
-                    if (messagesArray[i].to === nameObject.name) {
+                    if (messagesArray[i].to === nameObject.name || messagesArray[i].from === nameObject.name) {
                         message = `
                     <li class="private"><span class="time">(${messagesArray[i].time})</span> <span class="participant">${messagesArray[i].from}</span>
                 reservadamente para <span class="participant">${messagesArray[i].to}</span>: ${messagesArray[i].text}</li>
@@ -185,6 +190,32 @@ function checkInput(input, button) {
     document.querySelector("#login-screen span").classList.add("soft-hidden");
 }
 
-function showSidebar() {
-    document.getElementById("right").classList.remove("hidden")
+function selectPrivacy(privacy) {
+
+    if (privacy.innerText === "Reservadamente") {
+
+    } else {
+
+    }
+
+}
+
+function showSidebar(bol) {
+    const rightDiv = document.getElementById("right")
+    const overlay = document.getElementById("overlay")
+    const sidebar = document.getElementById("sidebar")
+    if (bol) {
+        rightDiv.classList.remove("hidden");
+        setTimeout(function () {
+            overlay.style.opacity = 1
+            sidebar.style.right = "0"
+        }, 20)
+    } else {
+        overlay.style.opacity = 0
+        sidebar.style.right = "-249px"
+        setTimeout(function () {
+            rightDiv.classList.add("hidden");
+        }, 300)
+    }
+
 }

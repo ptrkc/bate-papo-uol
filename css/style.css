@@ -93,6 +93,7 @@ body {
     font-size: 14px;
     line-height: 20px;
     margin:4px 0px;
+    overflow-wrap: break-word;
 }
 #messages li.status {
     background-color: #DCDCDC;
@@ -120,6 +121,11 @@ body {
     padding: 0px 17px;
     z-index: 1;
 }
+#bottom-bar div {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
 #bottom-bar input {
     width: 100%;
     height: 30px;
@@ -143,31 +149,38 @@ body {
 }
 #overlay{
     background: rgba(0, 0, 0, 0.6);
+    opacity: 0;
     position: fixed;
     top: 0;
     left: 0;
     height: 100%;
     width: 100%;
     z-index: 2;
+    transition: .3s;    
 }
 #sidebar {
-    width: 259px;
+    width: 249px;
     height: 100%;
     top: 0;
-    right: 0;
+    right: -249px;
     position: fixed;
     background-color: white;
     display: flex;
     flex-direction: column;
+    overflow-x: hidden;
     font-size: 16px;
     padding: 0px 12px;
     z-index: 3;
+    transition: 0.3s;
 }
 #sidebar span {
     text-align: center;
     font-weight: bold;
     margin: 25px;
     line-height: 19px;
+}
+#sidebar span.participant {
+    word-wrap: break-word;
 }
 #sidebar ion-icon {
     font-size: 25px;
