@@ -17,11 +17,26 @@ function evaluateClick(event) {
         case "login-button":
             clickedLogin(event.target.classList.contains("active"));
             break;
+        case "send":
+            sendMessage();
+            break;
         default:
             break;
     }
 }
-
+function sendMessage() {
+    const messageInput = document.getElementById("message")
+    const messageToSend = {
+        from: nameObject.name,
+        to: "Todos",
+        text: messageInput.value,
+        type: "message" // ou "private_message" para o bônus
+    }
+    sendRequest = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/uol/messages", messageToSend);
+    sendRequest.then(requestMessages);
+    messageInput.value = ""
+    messageInput.focus();
+}
 function clickedLogin(active) {
     if (active) {
         const username = document.getElementById("username").value;
@@ -86,7 +101,9 @@ function renderMessages(response) {
                 break;
         }
     }
-    document.getElementById("messages").innerHTML = messagesHTML;
+    const messages = document.getElementById("messages");
+    messages.innerHTML = messagesHTML;
+    window.scrollTo(0, document.body.scrollHeight);
 }
 
 function keepAlive() {
