@@ -1,3 +1,5 @@
+const nameObject = {};
+
 document.addEventListener("click", evaluateClick)
 
 loginScreen();
@@ -27,20 +29,15 @@ function clickedLogin(active) {
     }
 }
 function requestUsername(username) {
-    const nameObject = { name: username }
+    nameObject.name = username
     const usernameRequest = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/uol/participants", nameObject);
-    usernameRequest.then(function () { successfulLogin(nameObject) });
+    usernameRequest.then(function () { successfulLogin() });
     usernameRequest.catch(receivedError)
 }
-function successfulLogin(nameObject) {
+function successfulLogin() {
     hideLoginScreen();
-    //renderMessages();
-    keepAlive(nameObject);
-}
-function keepAlive(nameObject) {
-    setInterval(function () {
-        axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/uol/status", nameObject);
-    }, 5000);
+    requestMessagesLoop();
+    keepAlive();
 }
 function hideLoginScreen() {
     const loginScreen = document.getElementById("login-screen")
@@ -49,6 +46,55 @@ function hideLoginScreen() {
         loginScreen.classList.add("hidden")
     }, 500)
 }
+function requestMessagesLoop() {
+    requestMessages()
+    setInterval(requestMessages, 5000);
+}
+function requestMessages() {
+    const messagesRequest = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/uol/messages");
+    messagesRequest.then(renderMessages);
+}
+function renderMessages(response) {
+    let messagesHTML = ""
+    let message;
+    const messagesArray = response.data
+    for (let i = 0; i < messagesArray.length; i++) {
+        switch (messagesArray[i].type) {
+            case "status":
+                message = `
+                <li class="status"><span class="time">(${messagesArray[i].time})</span> <span class="username">${messagesArray[i].from}</span> ${messagesArray[i].text}</li>
+                `
+                messagesHTML += message
+                break;
+            case "message":
+                message = `
+                <li><span class="time">(${messagesArray[i].time})</span> <span class="username">${messagesArray[i].from}</span>
+                    para <span class="username">${messagesArray[i].to}</span>: ${messagesArray[i].text}</li>
+                `
+                messagesHTML += message
+                break;
+            case "private_message":
+                if (messagesArray[i].to === nameObject.name) {
+                    message = `
+                    <li class="private"><span class="time">(${messagesArray[i].time})</span> <span class="username">${messagesArray[i].from}</span>
+                reservadamente para <span class="username">${messagesArray[i].to}</span>: ${messagesArray[i].text}</li>
+                `
+                    messagesHTML += message
+                }
+                break;
+            default:
+                break;
+        }
+    }
+    document.getElementById("messages").innerHTML = messagesHTML;
+}
+
+function keepAlive() {
+    setInterval(function () {
+        axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/uol/status", nameObject);
+    }, 5000);
+}
+
 function receivedError(error) {
     const usernameInput = document.getElementById("username");
     usernameInput.value = "";

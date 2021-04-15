@@ -22,12 +22,13 @@ body {
 #login-screen .logo {
     width: 130px;
     height: 92px;
-    margin: 72px 0px 94px 0px;    
+    margin: 72px 0px 50px 0px;    
 }
 #login-screen span {
     font-size: 20px;
     color: rgb(255, 92, 92);
-    margin: 5px;
+    margin: 0px 0px 20px 0px;
+    text-align: center;
 }
 #login-screen span.soft-hidden {
     visibility: hidden;
@@ -92,7 +93,7 @@ body {
     line-height: 20px;
     margin:4px 0px;
 }
-#messages li.announcement {
+#messages li.status {
     background-color: #DCDCDC;
 }
 #messages li.private {
