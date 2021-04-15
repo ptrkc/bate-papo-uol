@@ -12,12 +12,15 @@ loginScreen();
 
 function evaluateClick(event) {
     let clickedItem;
+    console.clear()
+    console.log(event.target)
+    console.log(event)
+    console.log(event.target.parentNode.parentNode.id)
+
     if (event.target.id !== "") {
-        console.log("id do elemento: " + event.target.id)
         clickedItem = event.target.id;
-    } else {
-        console.log("id do pai: " + event.target.parentNode.id,)
-        clickedItem = event.target.parentNode.id;
+    } else if (event.target.classList.contains("clicable-area")) {
+        clickedItem = event.target.parentNode.parentNode.id
     }
     switch (clickedItem) {
         case "login-button":
@@ -29,11 +32,11 @@ function evaluateClick(event) {
         case "participants-button":
             showSidebar(true);
             break;
-        case "participants":
-            selectPartiticipant(event.target);
+        case "participant":
+            //selectPartiticipant(event);
             break;
         case "privacy":
-            selectPrivacy(event.target);
+            selectPrivacy(event.target.parentNode);
             break;
         case "overlay":
             showSidebar(false);
@@ -41,6 +44,9 @@ function evaluateClick(event) {
         default:
             break;
     }
+}
+function selectPartiticipant(participant) {
+    //console.log(participant)
 }
 function sendMessage() {
     const messageInput = document.getElementById("message")
@@ -86,6 +92,7 @@ function requestParticipants() {
 function renderParticipants(response) {
     let participantsHTML = `
     <li>
+        <div class="clicable-area"></div>
         <ion-icon name="people"></ion-icon>
         <span class="participant">Todos</span>
         <span class="check"></span>
@@ -96,10 +103,12 @@ function renderParticipants(response) {
     for (let i = 0; i < participantsArray.length; i++) {
         participant = `
                 <li>
+                    <div class="clicable-area"></div>
                     <ion-icon name="person-circle"></ion-icon>
                     <span class="participant">${participantsArray[i].name}</span>
                     <span class="check hidden"></span>
-                </li>                `
+                </li>                
+                `
         participantsHTML += participant
     }
     const participants = document.getElementById("participants");
@@ -143,7 +152,7 @@ function renderMessages(response) {
                     messagesHTML += message
                     break;
                 case "private_message":
-                    if (messagesArray[i].to === nameObject.name || messagesArray[i].from === nameObject.name) {
+                    if (messagesArray[i].to === "Todos" || messagesArray[i].to === nameObject.name || messagesArray[i].from === nameObject.name) {
                         message = `
                     <li class="private"><span class="time">(${messagesArray[i].time})</span> <span class="participant">${messagesArray[i].from}</span>
                 reservadamente para <span class="participant">${messagesArray[i].to}</span>: ${messagesArray[i].text}</li>
@@ -191,13 +200,12 @@ function checkInput(input, button) {
 }
 
 function selectPrivacy(privacy) {
-
     if (privacy.innerText === "Reservadamente") {
-
+        messageToSend.type = "private_message";
     } else {
-
+        messageToSend.type = "message";
     }
-
+    updateDestination()
 }
 
 function showSidebar(bol) {
@@ -207,9 +215,9 @@ function showSidebar(bol) {
     if (bol) {
         rightDiv.classList.remove("hidden");
         setTimeout(function () {
-            overlay.style.opacity = 1
-            sidebar.style.right = "0"
-        }, 20)
+            overlay.style.opacity = 1;
+            sidebar.style.right = "0";
+        }, 50)
     } else {
         overlay.style.opacity = 0
         sidebar.style.right = "-249px"
@@ -217,5 +225,13 @@ function showSidebar(bol) {
             rightDiv.classList.add("hidden");
         }, 300)
     }
+}
+function updateDestination() {
+    const destination = document.getElementById("destination")
+    if (messageToSend.type == "message") {
+        destination.innerText = `Enviando para ${messageToSend.to} (Público)`
+    } else {
+        destination.innerText = `Enviando para ${messageToSend.to} (Reservadamente)`
 
+    }
 }

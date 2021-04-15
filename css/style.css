@@ -169,7 +169,7 @@ body {
     flex-direction: column;
     overflow-x: hidden;
     font-size: 16px;
-    padding: 0px 12px;
+    padding: 0px 0px;
     z-index: 3;
     transition: 0.3s;
 }
@@ -198,10 +198,20 @@ body {
     display: flex;
     align-items: center;
     min-height: 34px;
+    padding: 0px 10px;
+    position: relative;
 }
 #sidebar li span.participant {
     word-break: break-all;
     width: 160px;
+}
+#sidebar li div.clicable-area{
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
 }
 .hidden {
     display: none;

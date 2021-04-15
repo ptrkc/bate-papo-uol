@@ -31,7 +31,7 @@
             <div id="bottom-bar">
                 <div>
                     <input type="text" id="message" placeholder="Escreva aqui...">
-                    <span>Enviando para Todos</span>
+                    <span id="destination">Enviando para Todos (Público)</span>
                 </div>
                 <ion-icon name="paper-plane-outline" id="send"></ion-icon>
             </div>
@@ -41,33 +41,17 @@
             <div id="sidebar">
                 <span>Escolha um contato <br>para enviar mensagem:</span>
                 <ul id="participants">
-                    <li>
-                        <ion-icon name="people"></ion-icon>
-                        </ion-icon>Todos
-                        <span class="check"></span>
-                    </li>
-                    <li>
-                        <ion-icon name="person-circle"></ion-icon>
-                        João
-                        <span class="check hidden"></span>
-                    </li>
-                    <li>
-                        <ion-icon name="person-circle"></ion-icon>
-                        Maria
-                        <span class="check hidden"></span>
-                    </li>
                 </ul>
                 <span>Escolha a visibilidade:</span>
                 <ul id="privacy">
                     <li>
+                        <div class="clicable-area"></div>
                         <ion-icon name="lock-open"></ion-icon>Público<span class="check "></span>
-
                     </li>
                     <li>
+                        <div class="clicable-area"></div>
                         <ion-icon name="lock-closed"></ion-icon>Reservadamente<span class="check hidden"></span>
-
                         </ion-icon>
-
                     </li>
                 </ul>
             </div>
