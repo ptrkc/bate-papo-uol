@@ -24,7 +24,11 @@ body {
     height: 92px;
     margin: 72px 0px 50px 0px;    
 }
-#login-screen span {
+#login-screen .loader {
+    width: 150px;
+    margin-bottom: 20px;
+}
+#login-screen .warn {
     font-size: 20px;
     color: rgb(255, 92, 92);
     margin: 0px 0px 20px 0px;

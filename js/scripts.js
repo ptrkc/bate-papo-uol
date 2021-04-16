@@ -61,7 +61,6 @@ function checkIfEnter(evt) {
         sendMessage()
     }
 }
-
 function sendMessage() {
     const messageInput = document.getElementById("message")
     if (messageInput.value !== "" && messageInput.value !== undefined) {
@@ -86,7 +85,19 @@ function requestUsername(username) {
     const usernameRequest = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/uol/participants", nameObject);
     usernameRequest.then(function () { successfulLogin() });
     usernameRequest.catch(receivedError)
+    loadingScreenToggle();
 }
+function loadingScreenToggle() {
+    initialElements = document.querySelectorAll("#login-screen > *:not(.logo, .hidden)")
+    loadingElements = document.querySelectorAll("#login-screen > .hidden:not(.logo)")
+    initialElements.forEach(element => {
+        element.classList.add("hidden")
+    });
+    loadingElements.forEach(element => {
+        element.classList.remove("hidden")
+    });
+}
+
 function successfulLogin() {
     messageToSend.from = nameObject.name
     hideLoginScreen();
@@ -209,10 +220,12 @@ function keepAlive() {
 }
 
 function receivedError(error) {
+    loadingScreenToggle()
     const usernameInput = document.getElementById("username");
     usernameInput.value = "";
     usernameInput.focus();
-    document.querySelector("#login-screen span").classList.remove("soft-hidden");
+    document.getElementById("login-button").classList.remove("active")
+    document.querySelector("#login-screen .warn").classList.remove("soft-hidden");
 }
 
 function checkUsernameInput(evt) {
@@ -225,7 +238,7 @@ function checkUsernameInput(evt) {
             clickedLogin(true)
         }
     }
-    document.querySelector("#login-screen span").classList.add("soft-hidden");
+    document.querySelector("#login-screen .warn").classList.add("soft-hidden");
 }
 
 function selectPrivacy(privacy) {
