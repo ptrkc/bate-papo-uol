@@ -6,6 +6,7 @@ const messageToSend = {
     type: "message" // ou "private_message" para o bônus
 }
 let lastMessages;
+
 document.addEventListener("click", evaluateClick)
 
 loginScreen();
@@ -32,8 +33,8 @@ function evaluateClick(event) {
         case "participants-button":
             showSidebar(true);
             break;
-        case "participant":
-            //selectPartiticipant(event);
+        case "participants":
+            selectPartiticipant(event.target.parentNode);
             break;
         case "privacy":
             selectPrivacy(event.target.parentNode);
@@ -46,7 +47,14 @@ function evaluateClick(event) {
     }
 }
 function selectPartiticipant(participant) {
-    //console.log(participant)
+    //previousTo = messageToSend.to
+
+    messageToSend.to = participant.innerText;
+    updateCheck(participant);
+    updateDestination();
+}
+function updateCheck() {
+
 }
 function sendMessage() {
     const messageInput = document.getElementById("message")
@@ -200,10 +208,15 @@ function checkInput(input, button) {
 }
 
 function selectPrivacy(privacy) {
+    const privacyChecks = document.querySelectorAll("#privacy li span.check")
     if (privacy.innerText === "Reservadamente") {
         messageToSend.type = "private_message";
+        privacyChecks[0].classList.add("hidden")
+        privacyChecks[1].classList.remove("hidden")
     } else {
         messageToSend.type = "message";
+        privacyChecks[1].classList.add("hidden")
+        privacyChecks[0].classList.remove("hidden")
     }
     updateDestination()
 }
