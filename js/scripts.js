@@ -7,8 +7,13 @@ const messageToSend = {
 };
 let lastMessages;
 
-
 startEventListeners();
+
+function startEventListeners() {
+    document.getElementById("username").addEventListener("keyup", checkUsernameInput);
+    document.getElementById("message").addEventListener("keyup", checkIfEnter);
+    document.addEventListener("click", evaluateClick);
+}
 
 function evaluateClick(event) {
     let clickedItem;
@@ -40,46 +45,33 @@ function evaluateClick(event) {
             break;
     }
 }
-function startEventListeners() {
-    document.getElementById("username").addEventListener("keyup", checkUsernameInput);
-    document.getElementById("message").addEventListener("keyup", checkIfEnter);
-    document.addEventListener("click", evaluateClick);
-}
 
-function selectPartiticipant(participant) {
-    messageToSend.to = participant.innerText;
-    updateCheck(participant);
-    updateDestination();
-}
-function updateCheck(participant) {
-    const checkedParticipant = participant.parentNode.querySelector("li span.check:not(.hidden)")
-    checkedParticipant.classList.add("hidden")
-    participant.querySelector("span.check").classList.remove("hidden");
-}
 function checkIfEnter(evt) {
     if (evt.key === "Enter") {
         sendMessage()
     }
 }
-function sendMessage() {
-    const messageInput = document.getElementById("message")
-    if (messageInput.value !== "" && messageInput.value !== undefined) {
-        messageToSend.text = messageInput.value
-        sendRequest = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/uol/messages", messageToSend);
-        sendRequest.then(requestMessages);
-        sendRequest.catch(function () {
-            window.location.reload()
-        });
-        messageInput.value = "";
-        messageInput.focus();
-    }
-}
+
 function clickedLogin(active) {
     if (active) {
         const username = document.getElementById("username").value;
         requestUsername(username);
     }
 }
+
+function checkUsernameInput(evt) {
+    const loginButton = document.getElementById("login-button")
+    if (evt.target.value === undefined || evt.target.value === "") {
+        loginButton.classList.remove("active")
+    } else {
+        loginButton.classList.add("active")
+        if (evt.key === "Enter") {
+            clickedLogin(true)
+        }
+    }
+    document.querySelector("#login-screen .warn").classList.add("soft-hidden");
+}
+
 function requestUsername(username) {
     nameObject.name = username
     const usernameRequest = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/uol/participants", nameObject);
@@ -87,6 +79,7 @@ function requestUsername(username) {
     usernameRequest.catch(receivedError)
     loadingScreenToggle();
 }
+
 function loadingScreenToggle() {
     initialElements = document.querySelectorAll("#login-screen > *:not(.logo, .hidden)")
     loadingElements = document.querySelectorAll("#login-screen > .hidden:not(.logo)")
@@ -105,55 +98,7 @@ function successfulLogin() {
     requestParticipantsLoop()
     keepAlive();
 }
-function requestParticipantsLoop() {
-    requestParticipants()
-    setInterval(requestParticipants, 10000);
-}
-function requestParticipants() {
-    const participantsRequest = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/uol/participants");
-    participantsRequest.then(renderParticipants);
-}
-function renderParticipants(response) {
-    const participantsArray = response.data
-    participantStillHere(participantsArray)
-    let hidden = " hidden";
-    if (messageToSend.to === "Todos") {
-        hidden = ""
-    }
-    let participantsHTML = `
-    <li>
-        <div class="clicable-area"></div>
-        <ion-icon name="people"></ion-icon>
-        <span class="participant">Todos</span>
-        <span class="check${hidden}"></span>
-    </li>`
-    let participant;
-    for (let i = 0; i < participantsArray.length; i++) {
-        if (participantsArray[i].name === messageToSend.to) {
-            hidden = ""
-        } else {
-            hidden = " hidden"
-        }
-        participant = `
-                <li>
-                    <div class="clicable-area"></div>
-                    <ion-icon name="person-circle"></ion-icon>
-                    <span class="participant">${participantsArray[i].name}</span>
-                    <span class="check${hidden}"></span>
-                </li>`
-        participantsHTML += participant;
-    }
-    const participants = document.getElementById("participants");
-    participants.innerHTML = participantsHTML;
-}
-function participantStillHere(participantsArray) {
-    const stillHere = participantsArray.find(participants => participants.name === messageToSend.to);
-    if (stillHere === undefined) {
-        messageToSend.to = "Todos"
-        messageToSend.type = "message"
-        updateDestination();
-    }
-}
+
 function hideLoginScreen() {
     const loginScreen = document.getElementById("login-screen")
     loginScreen.style.opacity = 0
@@ -209,16 +154,76 @@ function renderMessages(response) {
         const messages = document.getElementById("messages");
         messages.innerHTML = messagesHTML;
         lastMessages = messagesArray
-        window.scrollTo(0, document.body.scrollHeight);
+        messages.scrollTop = messages.scrollHeight;
     }
 }
-
+function requestParticipantsLoop() {
+    requestParticipants()
+    setInterval(requestParticipants, 10000);
+}
+function requestParticipants() {
+    const participantsRequest = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/uol/participants");
+    participantsRequest.then(renderParticipants);
+}
+function renderParticipants(response) {
+    const participantsArray = response.data
+    participantStillHere(participantsArray)
+    let participant;
+    let classes = "check hidden";
+    if (messageToSend.to === "Todos") {
+        classes = "check"
+    }
+    let participantsHTML = `
+    <li>
+        <div class="clicable-area"></div>
+        <ion-icon name="people"></ion-icon>
+        <span class="participant">Todos</span>
+        <span class="${classes}"></span>
+    </li>`
+    for (let i = 0; i < participantsArray.length; i++) {
+        if (participantsArray[i].name === messageToSend.to) {
+            classes = "check"
+        } else {
+            classes = "check hidden"
+        }
+        participant = `
+                <li>
+                    <div class="clicable-area"></div>
+                    <ion-icon name="person-circle"></ion-icon>
+                    <span class="participant">${participantsArray[i].name}</span>
+                    <span class="${classes}"></span>
+                </li>`
+        participantsHTML += participant;
+    }
+    const participants = document.getElementById("participants");
+    participants.innerHTML = participantsHTML;
+}
+function participantStillHere(participantsArray) {
+    const stillHere = participantsArray.find(participants => participants.name === messageToSend.to);
+    if (stillHere === undefined) {
+        messageToSend.to = "Todos"
+        messageToSend.type = "message"
+        updateDestination();
+    }
+}
 function keepAlive() {
     setInterval(function () {
         axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/uol/status", nameObject);
     }, 5000);
 }
-
+function sendMessage() {
+    const messageInput = document.getElementById("message")
+    if (messageInput.value !== "" && messageInput.value !== undefined) {
+        messageToSend.text = messageInput.value
+        sendRequest = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/uol/messages", messageToSend);
+        sendRequest.then(requestMessages);
+        sendRequest.catch(function () {
+            window.location.reload()
+        });
+        messageInput.value = "";
+        messageInput.focus();
+    }
+}
 function receivedError(error) {
     loadingScreenToggle()
     const usernameInput = document.getElementById("username");
@@ -227,20 +232,6 @@ function receivedError(error) {
     document.getElementById("login-button").classList.remove("active")
     document.querySelector("#login-screen .warn").classList.remove("soft-hidden");
 }
-
-function checkUsernameInput(evt) {
-    const loginButton = document.getElementById("login-button")
-    if (evt.target.value === undefined || evt.target.value === "") {
-        loginButton.classList.remove("active")
-    } else {
-        loginButton.classList.add("active")
-        if (evt.key === "Enter") {
-            clickedLogin(true)
-        }
-    }
-    document.querySelector("#login-screen .warn").classList.add("soft-hidden");
-}
-
 function selectPrivacy(privacy) {
     const privacyChecks = document.querySelectorAll("#privacy li span.check")
     if (privacy.innerText === "Reservadamente") {
@@ -254,7 +245,6 @@ function selectPrivacy(privacy) {
     }
     updateDestination()
 }
-
 function showSidebar(bol) {
     const rightDiv = document.getElementById("right")
     const overlay = document.getElementById("overlay")
@@ -272,6 +262,16 @@ function showSidebar(bol) {
             rightDiv.classList.add("hidden");
         }, 300)
     }
+}
+function selectPartiticipant(participant) {
+    messageToSend.to = participant.innerText;
+    updateCheck(participant);
+    updateDestination();
+}
+function updateCheck(participant) {
+    const checkedParticipant = participant.parentNode.querySelector("li span.check:not(.hidden)")
+    checkedParticipant.classList.add("hidden")
+    participant.querySelector("span.check").classList.remove("hidden");
 }
 function updateDestination() {
     const destination = document.getElementById("destination")

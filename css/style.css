@@ -86,8 +86,9 @@ body {
     flex-shrink: 0;
 }
 #messages{
-    margin: 106px 0px;   
-    height: 100%;
+    margin: 80px 0px;
+    height: calc(100vh - 160px);
+    overflow-y: scroll;
 }
 #messages li {
     background-color: #FFFFFF;
