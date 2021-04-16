@@ -213,6 +213,9 @@ body {
     height: 100%;
     width: 100%;
 }
+#participants {
+    overflow-y: scroll;
+}
 .hidden {
     display: none;
 }

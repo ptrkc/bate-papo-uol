@@ -14,10 +14,6 @@ loginScreen();
 function evaluateClick(event) {
     let clickedItem;
     console.clear()
-    console.log(event.target)
-    console.log(event)
-    console.log(event.target.parentNode.parentNode.id)
-
     if (event.target.id !== "") {
         clickedItem = event.target.id;
     } else if (event.target.classList.contains("clicable-area")) {
@@ -47,14 +43,17 @@ function evaluateClick(event) {
     }
 }
 function selectPartiticipant(participant) {
-    //previousTo = messageToSend.to
-
     messageToSend.to = participant.innerText;
     updateCheck(participant);
     updateDestination();
 }
-function updateCheck() {
-
+function updateCheck(participant) {
+    console.log(participant)
+    console.log(participant.parentNode)
+    console.log(participant.parentNode.querySelector("li span.check:not(.hidden)"))
+    const checkedParticipant = participant.parentNode.querySelector("li span.check:not(.hidden)")
+    checkedParticipant.classList.add("hidden")
+    participant.querySelector("span.check").classList.remove("hidden");
 }
 function sendMessage() {
     const messageInput = document.getElementById("message")
@@ -98,25 +97,41 @@ function requestParticipants() {
     participantsRequest.then(renderParticipants);
 }
 function renderParticipants(response) {
+    const participantsArray = response.data
+    const stillHere = participantsArray.find(participants => participants.name === messageToSend.to);
+    if (stillHere === undefined) {
+        messageToSend.to = "Todos"
+        messageToSend.type = "message"
+        updateDestination();
+    }
+    let hidden = " hidden";
+    if (messageToSend.to === "Todos") {
+        hidden = ""
+    }
     let participantsHTML = `
     <li>
         <div class="clicable-area"></div>
         <ion-icon name="people"></ion-icon>
         <span class="participant">Todos</span>
-        <span class="check"></span>
+        <span class="check${hidden}"></span>
     </li>
     `
     let participant;
-    const participantsArray = response.data
     for (let i = 0; i < participantsArray.length; i++) {
+        if (participantsArray[i].name === messageToSend.to) {
+            hidden = ""
+        } else {
+            hidden = " hidden"
+        }
         participant = `
                 <li>
                     <div class="clicable-area"></div>
                     <ion-icon name="person-circle"></ion-icon>
                     <span class="participant">${participantsArray[i].name}</span>
-                    <span class="check hidden"></span>
+                    <span class="check${hidden}"></span>
                 </li>                
                 `
+
         participantsHTML += participant
     }
     const participants = document.getElementById("participants");
