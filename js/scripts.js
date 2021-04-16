@@ -4,20 +4,18 @@ const messageToSend = {
     to: "Todos",
     text: "",
     type: "message" // ou "private_message" para o bônus
-}
+};
 let lastMessages;
 
-document.addEventListener("click", evaluateClick)
 
-loginScreen();
+startEventListeners();
 
 function evaluateClick(event) {
     let clickedItem;
-    console.clear()
     if (event.target.id !== "") {
         clickedItem = event.target.id;
     } else if (event.target.classList.contains("clicable-area")) {
-        clickedItem = event.target.parentNode.parentNode.id
+        clickedItem = event.target.parentNode.parentNode.id;
     }
     switch (clickedItem) {
         case "login-button":
@@ -42,24 +40,32 @@ function evaluateClick(event) {
             break;
     }
 }
+function startEventListeners() {
+    document.getElementById("username").addEventListener("keyup", checkUsernameInput);
+    document.getElementById("message").addEventListener("keyup", checkIfEnter);
+    document.addEventListener("click", evaluateClick);
+}
+
 function selectPartiticipant(participant) {
     messageToSend.to = participant.innerText;
     updateCheck(participant);
     updateDestination();
 }
 function updateCheck(participant) {
-    console.log(participant)
-    console.log(participant.parentNode)
-    console.log(participant.parentNode.querySelector("li span.check:not(.hidden)"))
     const checkedParticipant = participant.parentNode.querySelector("li span.check:not(.hidden)")
     checkedParticipant.classList.add("hidden")
     participant.querySelector("span.check").classList.remove("hidden");
 }
+function checkIfEnter(evt) {
+    if (evt.key === "Enter") {
+        sendMessage()
+    }
+}
+
 function sendMessage() {
     const messageInput = document.getElementById("message")
-    if (messageInput.value !== "") {
+    if (messageInput.value !== "" && messageInput.value !== undefined) {
         messageToSend.text = messageInput.value
-        console.log(messageToSend);
         sendRequest = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/uol/messages", messageToSend);
         sendRequest.then(requestMessages);
         sendRequest.catch(function () {
@@ -98,12 +104,7 @@ function requestParticipants() {
 }
 function renderParticipants(response) {
     const participantsArray = response.data
-    const stillHere = participantsArray.find(participants => participants.name === messageToSend.to);
-    if (stillHere === undefined) {
-        messageToSend.to = "Todos"
-        messageToSend.type = "message"
-        updateDestination();
-    }
+    participantStillHere(participantsArray)
     let hidden = " hidden";
     if (messageToSend.to === "Todos") {
         hidden = ""
@@ -114,8 +115,7 @@ function renderParticipants(response) {
         <ion-icon name="people"></ion-icon>
         <span class="participant">Todos</span>
         <span class="check${hidden}"></span>
-    </li>
-    `
+    </li>`
     let participant;
     for (let i = 0; i < participantsArray.length; i++) {
         if (participantsArray[i].name === messageToSend.to) {
@@ -129,15 +129,20 @@ function renderParticipants(response) {
                     <ion-icon name="person-circle"></ion-icon>
                     <span class="participant">${participantsArray[i].name}</span>
                     <span class="check${hidden}"></span>
-                </li>                
-                `
-
-        participantsHTML += participant
+                </li>`
+        participantsHTML += participant;
     }
     const participants = document.getElementById("participants");
     participants.innerHTML = participantsHTML;
 }
-
+function participantStillHere(participantsArray) {
+    const stillHere = participantsArray.find(participants => participants.name === messageToSend.to);
+    if (stillHere === undefined) {
+        messageToSend.to = "Todos"
+        messageToSend.type = "message"
+        updateDestination();
+    }
+}
 function hideLoginScreen() {
     const loginScreen = document.getElementById("login-screen")
     loginScreen.style.opacity = 0
@@ -163,23 +168,26 @@ function renderMessages(response) {
             switch (messagesArray[i].type) {
                 case "status":
                     message = `
-                <li class="status"><span class="time">(${messagesArray[i].time})</span> <span class="participant">${messagesArray[i].from}</span> ${messagesArray[i].text}</li>
-                `
+                        <li class="status">
+                        <span class="time">(${messagesArray[i].time})</span> 
+                        <span class="participant">${messagesArray[i].from}</span> 
+                        ${messagesArray[i].text}</li>`
                     messagesHTML += message
                     break;
                 case "message":
                     message = `
-                <li><span class="time">(${messagesArray[i].time})</span> <span class="participant">${messagesArray[i].from}</span>
-                    para <span class="participant">${messagesArray[i].to}</span>: ${messagesArray[i].text}</li>
-                `
+                        <li><span class="time">(${messagesArray[i].time})</span> 
+                        <span class="participant">${messagesArray[i].from}</span> para 
+                        <span class="participant">${messagesArray[i].to}</span>: ${messagesArray[i].text}</li>`
                     messagesHTML += message
                     break;
                 case "private_message":
                     if (messagesArray[i].to === "Todos" || messagesArray[i].to === nameObject.name || messagesArray[i].from === nameObject.name) {
                         message = `
-                    <li class="private"><span class="time">(${messagesArray[i].time})</span> <span class="participant">${messagesArray[i].from}</span>
-                reservadamente para <span class="participant">${messagesArray[i].to}</span>: ${messagesArray[i].text}</li>
-                `
+                            <li class="private"><span class="time">(${messagesArray[i].time})</span> 
+                            <span class="participant">${messagesArray[i].from}</span>
+                            reservadamente para <span class="participant">${messagesArray[i].to}</span>: 
+                            ${messagesArray[i].text}</li>`
                         messagesHTML += message
                     }
                     break;
@@ -206,18 +214,16 @@ function receivedError(error) {
     usernameInput.focus();
     document.querySelector("#login-screen span").classList.remove("soft-hidden");
 }
-function loginScreen() {
-    const usernameInput = document.getElementById("username")
-    const loginButton = document.getElementById("login-button")
-    usernameInput.addEventListener("keyup", function () { checkInput(usernameInput, loginButton) });
-    checkInput(usernameInput, loginButton);
-}
 
-function checkInput(input, button) {
-    if (input.value === "") {
-        button.classList.remove("active")
+function checkUsernameInput(evt) {
+    const loginButton = document.getElementById("login-button")
+    if (evt.target.value === undefined || evt.target.value === "") {
+        loginButton.classList.remove("active")
     } else {
-        button.classList.add("active")
+        loginButton.classList.add("active")
+        if (evt.key === "Enter") {
+            clickedLogin(true)
+        }
     }
     document.querySelector("#login-screen span").classList.add("soft-hidden");
 }
